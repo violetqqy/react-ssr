@@ -15,6 +15,10 @@
 //   console.log('Listening on port 3000');
 // });
 
+/**
+ * https://react-ssr-api.herokuapp.com/
+ */
+
 import express from 'express';
 // import React from 'react';
 // import { renderToString } from 'react-dom//server';
@@ -24,9 +28,8 @@ import renderer from './helpers/renderer';
 const app = express();
 
 app.use(express.static('public'));
-app.get('/', (req, res) => {
+app.get('*', (req, res) => {
   // const content = renderToString(<Home />);
-
   // const html = `
   //   <html>
   //     <head></head>
@@ -37,7 +40,7 @@ app.get('/', (req, res) => {
   //   </html>
   // `;
 
-  res.send(renderer());
+  res.send(renderer(req));
 });
 
 app.listen(3003, () => {
