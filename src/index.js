@@ -18,15 +18,28 @@
 /**
  * https://react-ssr-api.herokuapp.com/
  */
-
+import 'babel-polyfill';
 import express from 'express';
 // import React from 'react';
 // import { renderToString } from 'react-dom//server';
 // import Home from './client/components/Home';
+import { matchRoutes } from 'react-router-config';
+import proxy from 'express-http-proxy';
+import Routes from './client/Routes';
 import renderer from './helpers/renderer';
+import createStore from './helpers/createStore';
 
 const app = express();
 
+app.use(
+  '/api',
+  proxy('http://react-ssr-api.herokuapp.com', {
+    proxyReqOptDecorator(opts) {
+      opts.headers['x-forwarded-host'] = 'localhost:3003';
+      return opts;
+    }
+  })
+);
 app.use(express.static('public'));
 app.get('*', (req, res) => {
   // const content = renderToString(<Home />);
@@ -39,8 +52,19 @@ app.get('*', (req, res) => {
   //     </body>
   //   </html>
   // `;
+  const store = createStore(req);
 
-  res.send(renderer(req));
+  // Some logic to initialize
+  // and load data into the store
+  // console.log(matchRoutes(Routes, req.path));
+  const promises = matchRoutes(Routes, req.path).map(({ route }) => {
+    return route.loadData ? route.loadData(store) : null;
+  });
+  // console.log(promises);
+
+  Promise.all(promises).then(() => {
+    res.send(renderer(req, store));
+  });
 });
 
 app.listen(3003, () => {
