@@ -1,21 +1,41 @@
 import React from 'react';
 // import { Route } from 'react-router-dom';
+import App from './App';
 import HomePage from './pages/HomePage';
 import UsersListPage from './pages/UsersListPage';
 
 export default [
   {
-    ...HomePage,
-    path: '/',
-    exact: true
-  },
-  {
-    // loadData,
-    ...UsersListPage,
-    path: '/users',
-    // component: UsersListPage
+    ...App,
+    routes: [
+      {
+        ...HomePage,
+        path: '/',
+        exact: true
+      },
+      {
+        // loadData,
+        ...UsersListPage,
+        path: '/users',
+        // component: UsersListPage
+      }
+    ]
   }
 ];
+
+// export default [
+//   {
+//     ...HomePage,
+//     path: '/',
+//     exact: true
+//   },
+//   {
+//     // loadData,
+//     ...UsersListPage,
+//     path: '/users',
+//     // component: UsersListPage
+//   }
+// ];
 
 // export default () => {
 //   return (
