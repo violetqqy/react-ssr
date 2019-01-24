@@ -59,11 +59,44 @@ app.get('*', (req, res) => {
   // console.log(matchRoutes(Routes, req.path));
   const promises = matchRoutes(Routes, req.path).map(({ route }) => {
     return route.loadData ? route.loadData(store) : null;
+  }).map(promise => {
+    if (promise) {
+      return new Promise((resolve, reject) => {
+        promise.then(resolve).catch(resolve);
+      });
+    }
   });
   // console.log(promises);
 
+  // BAD SOLUTION #2
+  // const render = () => {
+  //   const context = {};
+  //   const content = renderer(req, store, context);
+
+  //   if (context.notFound) {
+  //     res.status(404);
+  //   }
+
+  //   res.send(content);
+  // }
+  // Promise.all(promises).then(render).catch(render);
+
   Promise.all(promises).then(() => {
-    res.send(renderer(req, store));
+    const context = {};
+    const content = renderer(req, store, context);
+
+    if (context.notFound) {
+      res.status(404);
+    }
+
+    res.send(content);
+    // res.send(renderer(req, store, context));
+
+  // BAD SOLUTION #2
+  // })
+  // .catch(() => {
+  //   res.status(404);
+  //   res.send('Something went wrong');
   });
 });
 
