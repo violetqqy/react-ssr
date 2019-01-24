@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 export const Header =  ({ auth }) => {
-  console.log(`My auth state is ${auth ? JSON.stringify(auth) : auth}.`);
+  // console.log(`My auth state is ${auth ? JSON.stringify(auth) : auth}.`);
 
   const authButton = auth ? (
     <a href='/api/logout'>Logout</a>
