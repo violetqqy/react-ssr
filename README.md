@@ -1,1 +1,1 @@
-# React Server Side Render Demo
+# React Server Side Rendering Demo
